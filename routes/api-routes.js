@@ -28,4 +28,17 @@ router.post('/notes', (req, res) => {
     }
 })
 
+//Handling the delete request
+
+router.post('/deleteNote/:noteId', (req, res) => {
+    console.log(req.params.noteId);
+    const deleteNotes = noteId.filter(item => item.noteId != req.params.noteId);
+    dbNotes = deleteNotes;
+    return res.redirect('/');
+});
+
+router.get('/notes/:noteId', (req, res) => {
+    res.json(dbNotes[req.params.noteId]);
+})
+
 module.exports = router;
