@@ -1,9 +1,14 @@
+// All required imports.
+
 const express = require('express');
 const router = express.Router();
 const db = require('../db/db.json');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
+
+
+// API routes.
 
 router.get('/notes', (req, res) => {
     const dbNotes = db
@@ -18,7 +23,7 @@ router.post('/notes', (req, res) => {
         const newNote = {
             title,
             text,
-            noteId: uuidv4()
+            id: uuidv4()
         }
         const dbNotes = db
         dbNotes.push(newNote);
@@ -28,17 +33,23 @@ router.post('/notes', (req, res) => {
     }
 })
 
-//Handling the delete request
+//Handling the delete request. This is not working currently.
 
-router.post('/deleteNote/:noteId', (req, res) => {
-    console.log(req.params.noteId);
-    const deleteNotes = noteId.filter(item => item.noteId != req.params.noteId);
-    dbNotes = deleteNotes;
-    return res.redirect('/');
-});
+router.delete('/note/:id', (req, res) => {
+    fs.readFile('../db/db.json', (err, data) => {
+        console.log(data);
+        deleteNotes = JSON.parse(data);
+        deleteNotes = deleteNotes.filter((item) => {
+            let url = req.query.identify;
+            return item.id !== url;
+        })
 
-router.get('/notes/:noteId', (req, res) => {
-    res.json(dbNotes[req.params.noteId]);
+        console.log(deleteNotes)
+        // let json = JSON.stringify(deleteNotes);
+        fs.writeFileSync(path.join(__dirname, '../db/db.json'), JSON.stringify(deleteNotes));
+        res.status(200).json(deleteNotes);
+    })
 })
+
 
 module.exports = router;
